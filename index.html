@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio of Gajendra Awasthi - Student, Content Creator, Graphics Designer, and Tech Enthusiast">
+    <meta name="keywords" content="Gajendra Awasthi, portfolio, hacker, cybgaz, music, graphics designer, content creator, tech enthusiast">
+    <meta name="author" content="Gajendra Awasthi">
+    <title>Gajendra Awasthi | Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Custom CSS for Neumorphism and Animations */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0d9488, #7c3aed);
+            color: #1f2937;
+            overflow-x: hidden;
+        }
+        .neumo {
+            background: #e0e7ff;
+            border-radius: 16px;
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .neumo:hover {
+            transform: translateY(-4px);
+            box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.15), -12px -12px 24px rgba(255, 255, 255, 0.7);
+        }
+        .section {
+            padding: 5rem 2rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .glow-btn {
+            background: linear-gradient(45deg, #7c3aed, #3b82f6);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glow-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+        }
+        .glow-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .glow-btn:hover::before {
+            left: 100%;
+        }
+        .whatsapp-btn {
+            background: linear-gradient(45deg, #25D366, #20c95a);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .whatsapp-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.5);
+        }
+        .whatsapp-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .whatsapp-btn:hover::before {
+            left: 100%;
+        }
+        .skill-bar {
+            height: 12px;
+            background: #d1d5db;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .skill-bar div {
+            height: 100%;
+            background: linear-gradient(45deg, #7c3aed, #3b82f6);
+            width: 0;
+            transition: width 1.5s ease-in-out;
+        }
+        .skill-bar.visible div {
+            width: var(--width);
+        }
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background: #1e293b;
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .hamburger {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1100;
+            cursor: pointer;
+        }
+        /* Hero Particles */
+        #particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* Responsive Adjustments */
+        @media (min-width: 1024px) {
+            .sidebar {
+                left: 0;
+                width: 200px;
+                background: transparent;
+                box-shadow: none;
+            }
+            .hamburger {
+                display: none;
+            }
+            .section {
+                margin-left: 220px;
+            }
+        }
+        @media (max-width: 768px) {
+            .section {
+                padding: 3rem 1rem;
+            }
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .profile-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* Make image slightly smaller on mobile */
+@media (max-width: 768px) {
+    .profile-img {
+        width: 120px;
+        height: 120px;
+    }
+}
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-white mb-8">Portfolio</h2>
+            <ul class="space-y-4">
+                <li><a href="#hero" class="text-white hover:text-purple-300 transition">Home</a></li>
+                <li><a href="#about" class="text-white hover:text-purple-300 transition">About</a></li>
+                <li><a href="#resume" class="text-white hover:text-purple-300 transition">Resume</a></li>
+                <li><a href="#portfolio" class="text-white hover:text-purple-300 transition">Portfolio</a></li>
+                <li><a href="#contact" class="text-white hover:text-purple-300 transition">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="hamburger" id="hamburger">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </div>
+
+<!-- Hero Section -->
+<section id="hero" class="section flex items-center justify-center relative">
+    <canvas id="particles"></canvas>
+    <div class="text-center neumo p-10 rounded-2xl max-w-md z-10">
+        <img src="https://avatars.githubusercontent.com/u/159510549?v=4" 
+             alt="Gajendra Awasthi" 
+             class="profile-img rounded-full mx-auto mb-6 shadow-lg transform hover:scale-105 transition">
+        <h1 class="text-5xl font-extrabold text-gray-900 mb-3">Gajendra Awasthi</h1>
+        <p class="text-xl text-gray-600 mb-6 animate-pulse">Student | Content Creator | Graphics Designer | Tech Geek</p>
+        <div class="flex justify-center gap-4">
+            <a href="#" id="download-cv" class="glow-btn px-6 py-3 rounded-full text-lg">Download CV</a>
+            <a href="#contact" class="glow-btn px-6 py-3 rounded-full text-lg">Contact Me</a>
+        </div>
+    </div>
+</section>
+
+    <!-- About Section -->
+    <section id="about" class="section bg-white/80 backdrop-blur-md">
+        <div class="container mx-auto text-center">
+            <h2 class="text-4xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-teal-500">About Me</h2>
+            <p class="text-lg max-w-2xl mx-auto mb-6 leading-relaxed">
+                Hey, I'm Gajendra Awasthi! A student by day, a creative whirlwind by night. I’m obsessed with designing eye-catching graphics, crafting stories through content, and geeking out over the latest tech. My vibe? Curiosity, passion, and a knack for turning ideas into reality.
+            </p>
+            <p class="text-lg max-w-2xl mx-auto mb-6">
+                <span class="font-semibold">Interests:</span> Singing, making new friends, and vibing to music, Watching Podcasts and Movies.
+            </p>
+        </div>
+    </section>
+
+    <!-- Resume Section -->
+    <section id="resume" class="section bg-gray-100/80 backdrop-blur-md">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-teal-500">Resume</h2>
+            <div class="neumo p-8 rounded-2xl">
+                <!-- Education Timeline -->
+                <h3 class="text-2xl font-bold mb-6">Education</h3>
+                <div class="space-y-8">
+                  <div class="neumo p-4 rounded-xl">
+                        <h4 class="text-xl font-bold">BCA (Ongoing)</h4>
+                        <p>NAST College — Dhangadhi-4, Utterbehidi, Kailali, Nepal</p>
+                        <p class="text-gray-600">[2081 - Present]</p>
+                    </div>
+                    <div class="neumo p-4 rounded-xl">
+                        <h4 class="text-xl font-bold">NEB: NATIONAL EXAMINATIONS BOARD (Management Faculty / 12<sup>th</sup> class / Secondary level)</h4>
+                        <p>NAST Secondary School — Dhangadhi, Kailali, Nepal</p>
+                        <p class="text-gray-600">[2079 B.S - 2081 B.S] With 2.74 GPA</p>
+                    </div>
+                    <div class="neumo p-4 rounded-xl">
+                        <h4 class="text-xl font-bold">SEE: Secondary Education Examination (1o<sup>th</sup> class) </h4>
+                        <p>Mount Saipal English School — Dhangadhi-13, Mohanpur, Kailali, Nepal</p>
+                        <p class="text-gray-600">[2065 B.S - 2078 B.S] With 2.50 GPA</p>
+                    </div>
+
+
+                </div>
+                <!-- Experience -->
+                <h3 class="text-2xl font-bold mt-10 mb-6">Experience</h3>
+                <div class="space-y-8">
+                    <div class="neumo p-4 rounded-xl">
+                        <h4 class="text-xl font-bold">Freelance Graphics Designer</h4>
+                        <p>Freelancer.com — Remote (Oct 2022 – Present)</p>
+                        <ul class="list-disc ml-6 text-gray-700">
+                            <li>Created logos, posters, and social media graphics using Photoshop, Canva, CorelDRAW</li>
+                            <li>Managed projects and delivered on time</li>
+                        </ul>
+                    </div>
+                    <div class="neumo p-4 rounded-xl">
+                        <h4 class="text-xl font-bold">Executive Graphic Designer</h4>
+                        <p>ITAN — Kathmandu, Nepal (Feb 2024 – Apr 2024)- Remote</p>
+                        <ul class="list-disc ml-6 text-gray-700">
+                            <li>Created logos, posters, and social media graphics using Photoshop, Canva, CorelDRAW</li>
+                            <li>Managed projects and delivered on time</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Download CV -->
+                <div class="text-center mt-10">
+                    <a href="#" id="download-cv-resume" class="glow-btn px-8 py-4 rounded-full text-lg">Download CV</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="section bg-white/80 backdrop-blur-md">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-teal-500">Portfolio</h2>
+            <div class="portfolio-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="neumo p-6 rounded-2xl hover:bg-gradient-to-br hover:from-purple-100 hover:to-teal-100 transition-colors">
+                    <img src="https://public-files.gumroad.com/1aab46k9wbjzanhat3d2l6wwob8k" alt="Project 1" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold">Logo Design</h3>
+                    <p class="text-gray-600">Modern logo for a startup using CorelDRAW and Photoshop.</p>
+                </div>
+                <div class="neumo p-6 rounded-2xl hover:bg-gradient-to-br hover:from-purple-100 hover:to-teal-100 transition-colors">
+                    <img src="https://blog.digitalj2.com/hubfs/How%20to%20Create%20Engaging%20Social%20Media%20Graphics%20to%20Grow%20Your%20Following.png" alt="Project 2" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold">Social Media Graphics</h3>
+                    <p class="text-gray-600">Engaging Instagram posts designed with Photoshop & Canva.</p>
+                </div>
+                <div class="neumo p-6 rounded-2xl hover:bg-gradient-to-br hover:from-purple-100 hover:to-teal-100 transition-colors">
+                    <img src="https://www.dignited.com/wp-content/uploads/2023/02/CapCut-1024x542.png" alt="Project 3" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-xl font-bold">Video Edit</h3>
+                    <p class="text-gray-600">Promotional video edited using CapCut.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section bg-gray-100/80 backdrop-blur-md">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-teal-500">Skills</h2>
+            <div class="neumo p-8 rounded-2xl">
+                <!-- Technical Skills -->
+                <h3 class="text-2xl font-bold mb-6">Technical Skills</h3>
+                <div class="space-y-6">
+                    <div>
+                        <p class="font-semibold">Photoshop</p>
+                        <div class="skill-bar" style="--width: 85%"><div></div></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold">Canva</p>
+                        <div class="skill-bar" style="--width: 90%"><div></div></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold">CapCut</p>
+                        <div class="skill-bar" style="--width: 80%"><div></div></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold">CorelDRAW</p>
+                        <div class="skill-bar" style="--width: 75%"><div></div></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold">MS Office</p>
+                        <div class="skill-bar" style="--width: 85%"><div></div></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold">HTML</p>
+                        <div class="skill-bar" style="--width: 70%"><div></div></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold">CSS</p>
+                        <div class="skill-bar" style="--width: 65%"><div></div></div>
+                    </div>
+                </div>
+                <!-- Soft Skills -->
+                <h3 class="text-2xl font-bold mt-10 mb-6">Soft Skills</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <p class="flex items-center text-lg"><span class="mr-2 text-purple-600">★</span> Teamwork</p>
+                    <p class="flex items-center text-lg"><span class="mr-2 text-purple-600">★</span> Communication</p>
+                    <p class="flex items-center text-lg"><span class="mr-2 text-purple-600">★</span> Self-Motivated</p>
+                    <p class="flex items-center text-lg"><span class="mr-2 text-purple-600">★</span> Passionate Learner</p>
+                </div>
+                <!-- Languages -->
+                <h3 class="text-2xl font-bold mt-10 mb-6">Languages</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <p class="text-lg">Hindi: <span class="text-purple-600">Fluent</span></p>
+                    <p class="text-lg">Nepali: <span class="text-purple-600">Fluent</span></p>
+                    <p class="text-lg">English: <span class="text-purple-600">Intermediate</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-white/80 backdrop-blur-md">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-teal-500">Get in Touch</h2>
+            <div class="neumo p-8 rounded-2xl max-w-lg mx-auto text-center">
+                <p class="text-gray-700 mb-4">Phone: <a href="tel:+9779766456132" class="text-purple-600 hover:underline">+977-9766456132</a></p>
+                <p class="text-gray-700 mb-6">Email: <a href="mailto:gajendraawasthi456@gmail.com" class="text-purple-600 hover:underline">gajendraawasthi456@gmail.com</a></p>
+                <a href="https://wa.link/b74oin" target="_blank" class="whatsapp-btn px-8 py-4 rounded-full text-lg flex items-center justify-center gap-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.452-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Contact Me
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto text-center">
+            <div class="flex justify-center gap-8 mb-6">
+                <a href="https://www.facebook.com/sanuawasthi123" class="text-2xl hover:text-purple-300 transition transform hover:scale-110">Facebook</a>
+                <a href="https://www.instagram.com/gajendra.awasthi/" class="text-2xl hover:text-purple-300 transition transform hover:scale-110">Instagram</a>
+                <a href="https://github.com/GajendraAwasthi" class="text-2xl hover:text-purple-300 transition transform hover:scale-110">GitHub</a>
+            </div>
+            <p class="text-gray-400">© 2025 Gajendra Awasthi. <span class="text-purple-400">Resume 🖨</span>.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        // Sidebar Toggle
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Close Sidebar on Link Click
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+            });
+        });
+
+        // Scroll Animations
+        const sections = document.querySelectorAll('.section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Trigger skill bar animations
+                    entry.target.querySelectorAll('.skill-bar').forEach(bar => {
+                        bar.classList.add('visible');
+                    });
+                }
+            });
+        }, { threshold: 0.2 });
+
+        sections.forEach(section => observer.observe(section));
+
+        // Particle Animation for Hero
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 50;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 5 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+                if (p.size <= 0.2) {
+                    particles.splice(particles.indexOf(p), 1);
+                    particles.push(new Particle());
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // Resize Canvas
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // CV Download Functionality using jsPDF
+        const { jsPDF } = window.jspdf;
+
+        function generatePDF() {
+            const doc = new jsPDF();
+            let yPos = 10;
+
+            // Helper function to add text with wrapping
+            function addText(text, x, y, maxWidth) {
+                const lines = doc.splitTextToSize(text, maxWidth);
+                doc.text(lines, x, y);
+                return y + (lines.length * 7); // Approximate line height
+            }
+
+            // Title
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            yPos = addText("Gajendra Awasthi", 10, yPos, 180);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            yPos = addText("Student | Content Creator | Graphics Designer | Tech Enthusiast", 10, yPos, 180);
+            yPos = addText("Phone: +977-9766456132", 10, yPos, 180);
+            yPos = addText("Email: gajendraawasthi456@gmail.com", 10, yPos, 180);
+            yPos += 5;
+
+            // About
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            yPos = addText("About", 10, yPos, 180);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            yPos = addText(
+                "I'm Gajendra Awasthi, a passionate student and tech enthusiast from Nepal. I love blending creativity with technology, whether it's designing stunning graphics, creating engaging content, or diving into the latest tech trends. My journey is fueled by curiosity and a drive to learn something new every day.",
+                10, yPos, 180
+            );
+            yPos = addText("Interests: Singing, Making New Friends, Listening to Music", 10, yPos, 180);
+            yPos += 5;
+
+            // Education
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            yPos = addText("Education", 10, yPos, 180);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            yPos = addText("- BCA (Ongoing), NAST College, Dhangadhi-4, Utterbehidi, Kailali, Nepal [2081 B.S  - Present]", 10, yPos, 180);
+            yPos = addText("- NEB (Management), NAST Secondary School, Dhangadhi, Kailali, Nepal [2079 B.S - 2081 B.S]", 10, yPos, 180);
+            yPos = addText("- SEE, Mount Saipal English School, Dhangadhi-13, Mohanpur, Kailali, Nepal [2065 B.S - 2078 B.S]", 10, yPos, 180);
+            yPos += 5;
+
+            // Experience
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            yPos = addText("Experience", 10, yPos, 180);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            yPos = addText("- Freelance Graphics Designer, Freelancer.com, Remote (Oct 2022 – Present)", 10, yPos, 180);
+            yPos = addText("  * Created logos, posters, and social media graphics using Photoshop, Canva, CorelDRAW", 10, yPos, 180);
+            yPos = addText("  * Managed projects and delivered on time", 10, yPos, 180);
+            yPos = addText("- Executive Graphics Designer, ITAN, Remote, Nepal (Feb 2024 – Apr 2024)", 10, yPos, 180);
+            yPos = addText("  * Logo , Flex , Banner , Thumbnail and other designing", 10, yPos, 180);
+            yPos = addText("  * All Purpose Graphics Design support", 10, yPos, 180);
+            yPos += 5;
+
+            // Skills
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            yPos = addText("Skills", 10, yPos, 180);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            yPos = addText("Technical:", 10, yPos, 180);
+            yPos = addText("- Photoshop (85%)", 10, yPos, 180);
+            yPos = addText("- Canva (90%)", 10, yPos, 180);
+            yPos = addText("- CapCut (80%)", 10, yPos, 180);
+            yPos = addText("- CorelDRAW (75%)", 10, yPos, 180);
+            yPos = addText("- MS Office (85%)", 10, yPos, 180);
+            yPos = addText("- HTML (70%)", 10, yPos, 180);
+            yPos = addText("- CSS (65%)", 10, yPos, 180);
+            yPos = addText("Soft Skills:", 10, yPos, 180);
+            yPos = addText("- Teamwork", 10, yPos, 180);
+            yPos = addText("- Communication", 10, yPos, 180);
+            yPos = addText("- Self-Motivated", 10, yPos, 180);
+            yPos = addText("- Passionate Learner", 10, yPos, 180);
+            yPos += 5;
+
+            // Save the PDF
+            return doc.output('bloburl');
+        }
+
+        // Attach PDF generation to Download CV buttons
+        document.getElementById('download-cv').addEventListener('click', (e) => {
+            e.preventDefault();
+            const pdfUrl = generatePDF();
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = 'Gajendra_Awasthi_CV.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        document.getElementById('download-cv-resume').addEventListener('click', (e) => {
+            e.preventDefault();
+            const pdfUrl = generatePDF();
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = 'Gajendra_Awasthi_CV.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>
